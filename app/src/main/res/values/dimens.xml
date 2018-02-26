@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="header_text_size">30sp</dimen>
+    <dimen name="header_padding">10sp</dimen>
+    <dimen name="poster_height">277dp</dimen>
+    <dimen name="poster_width">185dp</dimen>
+    <dimen name="poster_margin">10sp</dimen>
+    <dimen name="year_margin">10sp</dimen>
+    <dimen name="year_padding">10dp</dimen>
+    <dimen name="year_text_size">30sp</dimen>
+    <dimen name="rating_margin_left">10sp</dimen>
+    <dimen name="rating_padding_left">10dp</dimen>
+    <dimen name="rating_text_size">20sp</dimen>
+    <dimen name="overview_margin">10sp</dimen>
+    <dimen name="overview_text_size">16sp</dimen>
+</resources>

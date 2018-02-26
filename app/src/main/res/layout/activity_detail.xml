@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.kfugosic.popularmoviesstage1.DetailActivity">
+
+    <TextView
+        android:id="@+id/title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorHeader"
+        android:textSize="@dimen/header_text_size"
+        android:padding="@dimen/header_padding"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/poster_iv"
+                    android:layout_width="@dimen/poster_width"
+                    android:layout_height="@dimen/poster_height"
+                    android:contentDescription="@string/movie_poster"
+                    android:layout_margin="@dimen/poster_margin"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/year_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/year_margin"
+                        android:padding="@dimen/year_padding"
+                        android:textSize="@dimen/year_text_size" />
+
+                    <TextView
+                        android:id="@+id/user_score_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/rating_margin_left"
+                        android:paddingLeft="@dimen/rating_padding_left"
+                        android:textSize="@dimen/rating_text_size" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/overview_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/overview_margin"
+                android:textSize="@dimen/overview_text_size" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

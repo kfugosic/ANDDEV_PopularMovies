@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Popular Movies Stage 1</string>
+    <string name="poster_iv_content_desc">Movie poster</string>
+    <string name="movie_poster">Movie poster</string>
+    <string name="error_text">"Movie data not available"</string>
+    <string name="sort_order">Sort order</string>
+    <string name="most_popular">Most popular</string>
+    <string name="highest_rated">Highest rated</string>
+
+    <string name="clicked_movie">clicked_movie</string>
+    <string name="user_score_showing_format">%s/10</string>
+    <string name="sort_type">sort_type</string>
+    <string name="json_results">results</string>
+    <string name="json_id">id</string>
+    <string name="json_title">original_title</string>
+    <string name="json_overview">overview</string>
+    <string name="json_poster_path">poster_path</string>
+    <string name="json_score">vote_average</string>
+    <string name="json_release_date">release_date</string>
+</resources>
