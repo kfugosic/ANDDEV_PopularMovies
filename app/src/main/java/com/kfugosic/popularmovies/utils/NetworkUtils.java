@@ -1,9 +1,9 @@
-package com.kfugosic.popularmoviesstage1.utils;
+package com.kfugosic.popularmovies.utils;
 
 import android.net.Uri;
 import android.util.Log;
 
-import com.kfugosic.popularmoviesstage1.enums.SortType;
+import com.kfugosic.popularmovies.enums.SortType;
 
 import java.io.IOException;
 import java.io.InputStream;

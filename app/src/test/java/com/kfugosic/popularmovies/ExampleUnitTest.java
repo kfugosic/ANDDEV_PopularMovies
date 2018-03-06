@@ -1,4 +1,4 @@
-package com.kfugosic.popularmoviesstage1;
+package com.kfugosic.popularmovies;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.kfugosic.popularmoviesstage1.models;
+package com.kfugosic.popularmovies.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

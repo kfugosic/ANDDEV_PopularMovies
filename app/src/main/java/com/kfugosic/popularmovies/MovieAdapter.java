@@ -1,4 +1,4 @@
-package com.kfugosic.popularmoviesstage1;
+package com.kfugosic.popularmovies;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.kfugosic.popularmoviesstage1.models.Movie;
-import com.kfugosic.popularmoviesstage1.utils.NetworkUtils;
+import com.kfugosic.popularmovies.models.Movie;
+import com.kfugosic.popularmovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

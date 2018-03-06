@@ -1,15 +1,14 @@
-package com.kfugosic.popularmoviesstage1;
+package com.kfugosic.popularmovies;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kfugosic.popularmoviesstage1.models.Movie;
-import com.kfugosic.popularmoviesstage1.utils.NetworkUtils;
+import com.kfugosic.popularmovies.models.Movie;
+import com.kfugosic.popularmovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 public class DetailActivity extends AppCompatActivity {

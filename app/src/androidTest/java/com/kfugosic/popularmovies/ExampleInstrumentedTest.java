@@ -1,4 +1,4 @@
-package com.kfugosic.popularmoviesstage1;
+package com.kfugosic.popularmovies;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

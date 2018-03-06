@@ -1,4 +1,4 @@
-package com.kfugosic.popularmoviesstage1;
+package com.kfugosic.popularmovies;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -7,12 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.kfugosic.popularmoviesstage1.models.Movie;
-import com.kfugosic.popularmoviesstage1.utils.NetworkUtils;
-import com.kfugosic.popularmoviesstage1.enums.SortType;
+import com.kfugosic.popularmovies.models.Movie;
+import com.kfugosic.popularmovies.utils.NetworkUtils;
+import com.kfugosic.popularmovies.enums.SortType;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
 
     private static final int NUMBER_OF_COLUMNS_PORTRAIT = 2;
     private static final int NUMBER_OF_COLUMNS_LANDSCAPE = 3;
+    private static final int LANDSCAPE_ORIENTATION_ID = 2;
     private static final String SORT_TYPE = "sort_type";
 
     private static final SortType DEFAULT_SORT_TYPE = SortType.POPULAR;
@@ -37,15 +39,7 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
 
         moviesGrid = findViewById(R.id.movies_rv);
 
-        GridLayoutManager layoutManager;
-        switch (this.getResources().getConfiguration().orientation) {
-            case 2:
-                layoutManager = new GridLayoutManager(this, NUMBER_OF_COLUMNS_LANDSCAPE);
-                break;
-            default:
-                layoutManager = new GridLayoutManager(this, NUMBER_OF_COLUMNS_PORTRAIT);
-                break;
-        }
+        GridLayoutManager layoutManager = new GridLayoutManager(this, numberOfColumns());
 
         moviesGrid.setLayoutManager(layoutManager);
         moviesGrid.setHasFixedSize(true);
@@ -100,5 +94,20 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         outState.putSerializable(SORT_TYPE, currentSortType);
         super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    private int numberOfColumns() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        // You can change this divider to adjust the size of the poster
+        float widthDivider = pxFromDp(185);
+        int width = displayMetrics.widthPixels;
+        int nColumns = (int)(width / widthDivider);
+        if (nColumns < 2) return 2;
+        return nColumns;
+    }
+
+    public static float pxFromDp(final float dp) {
+        return dp * Resources.getSystem().getDisplayMetrics().density;
     }
 }

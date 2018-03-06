@@ -1,4 +1,4 @@
-package com.kfugosic.popularmoviesstage1.enums;
+package com.kfugosic.popularmovies.enums;
 
 public enum SortType {
     POPULAR,
