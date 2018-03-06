@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Popular Movies Stage 1</string>
+    <string name="app_name" translatable="false">Popular Movies</string>
     <string name="poster_iv_content_desc">Movie poster</string>
     <string name="movie_poster">Movie poster</string>
     <string name="error_text">"Movie data not available"</string>
