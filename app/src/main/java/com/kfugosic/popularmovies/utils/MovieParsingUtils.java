@@ -1,5 +1,8 @@
 package com.kfugosic.popularmovies.utils;
 
+import android.database.Cursor;
+
+import com.kfugosic.popularmovies.data.FavouriteMoviesContract;
 import com.kfugosic.popularmovies.models.Movie;
 
 import org.json.JSONArray;
@@ -41,6 +44,28 @@ public class JsonUtils {
                 movies.add(newMovie);
             }
         } catch (JSONException e) {
+            movies = null;
+            e.printStackTrace();
+        }
+        return movies;
+    }
+
+    public static List<Movie> parseMovieCursor(Cursor cursor) {
+        List<Movie> movies = new ArrayList<>();
+        try {
+            for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                // The Cursor is now set to the right position
+                Movie currentMovieInCursor = new Movie(
+                        cursor.getString(cursor.getColumnIndex(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_TMDBID)),
+                        cursor.getString(cursor.getColumnIndex(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_TITLE)),
+                        cursor.getString(cursor.getColumnIndex(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_OVERVIEW)),
+                        cursor.getString(cursor.getColumnIndex(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_POSTER_PATH)),
+                        cursor.getString(cursor.getColumnIndex(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_USER_RATING)),
+                        cursor.getString(cursor.getColumnIndex(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_RELEASE_DATE))
+                );
+                movies.add(currentMovieInCursor);
+            }
+        } catch (Exception e) {
             movies = null;
             e.printStackTrace();
         }
