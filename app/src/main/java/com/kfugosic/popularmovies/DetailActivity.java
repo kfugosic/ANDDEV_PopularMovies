@@ -1,5 +1,6 @@
 package com.kfugosic.popularmovies;
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -258,6 +259,15 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
     public void onListItemClick(Object clickedItem) {
         if(!(clickedItem instanceof Trailer)) {
             return;
+        }
+        Trailer chosenTrailer = (Trailer) clickedItem;
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + chosenTrailer.getKey()));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://www.youtube.com/watch?v=" + chosenTrailer.getKey()));
+        try {
+            startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            startActivity(webIntent);
         }
         Toast.makeText(this, ((Trailer) clickedItem).getName(), Toast.LENGTH_SHORT).show();
     }

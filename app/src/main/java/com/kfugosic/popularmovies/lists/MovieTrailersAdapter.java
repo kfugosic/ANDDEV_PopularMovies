@@ -2,14 +2,13 @@ package com.kfugosic.popularmovies.lists;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.kfugosic.popularmovies.R;
-import com.kfugosic.popularmovies.models.Movie;
 import com.kfugosic.popularmovies.models.Trailer;
 import com.kfugosic.popularmovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -43,6 +42,7 @@ public class MovieTrailersAdapter extends RecyclerView.Adapter<MovieTrailersAdap
         Trailer current = mTrailers.get(position);
         String posterUrl = NetworkUtils.buildYoutubeThumbnailUrl(current.getKey()).toString();
         holder.loadImage(posterUrl);
+        holder.setTrailerName(current.getName());
     }
 
     @Override
@@ -52,10 +52,12 @@ public class MovieTrailersAdapter extends RecyclerView.Adapter<MovieTrailersAdap
 
     public class MovieTrailersViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final ImageView trailerImageView;
+        public final TextView trailerTextView;
 
         public MovieTrailersViewHolder(View itemView) {
             super(itemView);
             trailerImageView = itemView.findViewById(R.id.trailer_iv);
+            trailerTextView = itemView.findViewById(R.id.trailer_name_tv);
             trailerImageView.setOnClickListener(this);
         }
 
@@ -67,10 +69,15 @@ public class MovieTrailersAdapter extends RecyclerView.Adapter<MovieTrailersAdap
                     .into(trailerImageView);
         }
 
+        public void setTrailerName(String name) {
+            trailerTextView.setText(name);
+        }
+
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
             mOnClickListener.onListItemClick(mTrailers.get(position));
         }
+
     }
 }
