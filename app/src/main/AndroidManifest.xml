@@ -21,6 +21,10 @@
         <activity android:name="com.kfugosic.popularmovies.DetailActivity"
             android:parentActivityName="com.kfugosic.popularmovies.MainActivity">
         </activity>
+        <provider
+            android:name="com.kfugosic.popularmovies.data.FavouriteMoviesContentProvider"
+            android:authorities="com.kfugosic.popularmovies"
+            android:exported="false" />
     </application>
 
 </manifest>

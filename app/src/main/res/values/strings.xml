@@ -7,4 +7,8 @@
     <string name="most_popular">Most popular</string>
     <string name="highest_rated">Highest rated</string>
     <string name="user_score_showing_format">%s/10</string>
+    <string name="favourites">Favourites</string>
+    <string name="trailers">Trailers:</string>
+    <string name="reviews">Reviews:</string>
+    <string name="movie_trailer_text">Movie trailer</string>
 </resources>

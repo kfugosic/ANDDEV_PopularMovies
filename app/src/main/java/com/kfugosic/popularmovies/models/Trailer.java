@@ -1,13 +1,13 @@
 package com.kfugosic.popularmovies.models;
 
-public class Video {
+public class Trailer {
 
     private String id;
     private String key;
     private String name;
     private String site;
 
-    public Video(String id, String key, String name, String site) {
+    public Trailer(String id, String key, String name, String site) {
         this.id = id;
         this.key = key;
         this.name = name;

@@ -2,5 +2,6 @@ package com.kfugosic.popularmovies.enums;
 
 public enum SortType {
     POPULAR,
-    HIGHEST_RATED
+    HIGHEST_RATED,
+    FAVOURITES
 }

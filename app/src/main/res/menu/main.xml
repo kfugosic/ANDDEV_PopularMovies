@@ -17,6 +17,10 @@
                 android:id="@+id/action_sort_highest_rated"
                 android:title="@string/highest_rated"
                 android:orderInCategory="2" />
+            <item
+                android:id="@+id/action_sort_favourites"
+                android:title="@string/favourites"
+                android:orderInCategory="3" />
         </menu>
     </item>
 

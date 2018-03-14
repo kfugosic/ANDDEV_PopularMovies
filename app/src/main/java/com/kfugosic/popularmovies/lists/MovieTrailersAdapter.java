@@ -2,6 +2,7 @@ package com.kfugosic.popularmovies.lists;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,52 +10,53 @@ import android.widget.ImageView;
 
 import com.kfugosic.popularmovies.R;
 import com.kfugosic.popularmovies.models.Movie;
+import com.kfugosic.popularmovies.models.Trailer;
 import com.kfugosic.popularmovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class MovieTrailersAdapter extends RecyclerView.Adapter<MovieDetailsAdapter.MovieDetailsViewHolder> {
+public class MovieTrailersAdapter extends RecyclerView.Adapter<MovieTrailersAdapter.MovieTrailersViewHolder> {
 
-    private List<Movie> mMovies;
+    private List<Trailer> mTrailers;
 
     final private ListItemClickListener mOnClickListener;
 
-    public MovieTrailersAdapter(List<Movie> movies, ListItemClickListener clickListener) {
-        mMovies = movies;
+    public MovieTrailersAdapter(List<Trailer> trailers, ListItemClickListener clickListener) {
+        mTrailers = trailers;
         mOnClickListener = clickListener;
     }
 
     @Override
-    public MovieDetailsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MovieTrailersViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int layoutId = R.layout.movie_poster;
+        int layoutId = R.layout.movie_trailer;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmidiately = false;
 
         View view = inflater.inflate(layoutId, parent, shouldAttachToParentImmidiately);
-        return new MovieDetailsViewHolder(view);
+        return new MovieTrailersViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(MovieDetailsViewHolder holder, int position) {
-        Movie current = mMovies.get(position);
-        String posterUrl = NetworkUtils.buildPosterUrl(current.getPosterPath()).toString();
+    public void onBindViewHolder(MovieTrailersViewHolder holder, int position) {
+        Trailer current = mTrailers.get(position);
+        String posterUrl = NetworkUtils.buildYoutubeThumbnailUrl(current.getKey()).toString();
         holder.loadImage(posterUrl);
     }
 
     @Override
     public int getItemCount() {
-        return mMovies.size();
+        return mTrailers.size();
     }
 
-    public class MovieDetailsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final ImageView posterImageView;
+    public class MovieTrailersViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public final ImageView trailerImageView;
 
-        public MovieDetailsViewHolder(View itemView) {
+        public MovieTrailersViewHolder(View itemView) {
             super(itemView);
-            posterImageView = itemView.findViewById(R.id.poster_iv);
-            posterImageView.setOnClickListener(this);
+            trailerImageView = itemView.findViewById(R.id.trailer_iv);
+            trailerImageView.setOnClickListener(this);
         }
 
         public void loadImage(String posterUrl) {
@@ -62,13 +64,13 @@ public class MovieTrailersAdapter extends RecyclerView.Adapter<MovieDetailsAdapt
                     .load(posterUrl)
                     .placeholder(R.drawable.loading)
                     .error(R.drawable.ic_do_not_disturb_alt_black_24dp)
-                    .into(posterImageView);
+                    .into(trailerImageView);
         }
 
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            mOnClickListener.onListItemClick(mMovies.get(position));
+            mOnClickListener.onListItemClick(mTrailers.get(position));
         }
     }
 }

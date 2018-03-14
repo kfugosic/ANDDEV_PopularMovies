@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorHeader"
+        android:textColor="@color/colorTextSecondary"
         android:textSize="@dimen/header_text_size"
         android:padding="@dimen/header_padding"/>
 
@@ -47,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/year_margin"
                         android:padding="@dimen/year_padding"
-                        android:textSize="@dimen/year_text_size" />
+                        android:textSize="@dimen/year_text_size"/>
 
                     <TextView
                         android:id="@+id/user_score_tv"
@@ -56,6 +57,16 @@
                         android:layout_marginLeft="@dimen/rating_margin_left"
                         android:paddingLeft="@dimen/rating_padding_left"
                         android:textSize="@dimen/rating_text_size" />
+
+                    <ToggleButton
+                        android:layout_width="@dimen/favourite_btn_dim"
+                        android:layout_height="@dimen/favourite_btn_dim"
+                        android:id="@+id/favourite_tb"
+                        android:layout_margin="@dimen/year_margin"
+                        android:layout_gravity="center_horizontal"
+                        android:buttonTint="@color/colorPrimary"
+                        android:textOn=""
+                        android:textOff=""/>
 
                 </LinearLayout>
 
@@ -67,6 +78,50 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/overview_margin"
                 android:textSize="@dimen/overview_text_size" />
+
+
+            <View
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/trailers"
+                android:textSize="12sp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/trailers_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </android.support.v7.widget.RecyclerView>
+
+
+            <View
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/reviews"
+                android:textSize="12sp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/reviews_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </android.support.v7.widget.RecyclerView>
 
         </LinearLayout>
     </ScrollView>

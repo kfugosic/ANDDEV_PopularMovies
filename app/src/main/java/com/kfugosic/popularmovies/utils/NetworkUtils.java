@@ -16,12 +16,17 @@ public class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
-    private static final String MOVIEDB_BASE_URL = "http://api.themoviedb.org/3";
-    private static final String QUERY_TYPE_POPULAR = "/movie/popular";
-    private static final String QUERY_TYPE_TOPRATED = "/movie/top_rated";
+    private static final String MOVIEDB_BASE_URL = "http://api.themoviedb.org/3/movie";
+    private static final String QUERY_TYPE_POPULAR = "/popular";
+    private static final String QUERY_TYPE_TOPRATED = "/top_rated";
+    private static final String PATH_TRAILERS = "videos";
+    private static final String PATH_REVIEWS = "reviews";
 
     private static final String MOVIEDB_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String DEFAULT_IMAGE_SIZE = "w185";
+
+    private static final String YOUTUBE_THUMBNAIL_BASE_URL = "https://img.youtube.com/vi";
+    private static final String YOUTUBE_THUMBNAIL_SPECIFIER = "mqdefault.jpg";
 
     private static final String API_KEY_PARAM = "api_key";
 
@@ -67,6 +72,59 @@ public class NetworkUtils {
         }
 
         Log.v(TAG, "Built poster url: " + url);
+        return url;
+    }
+
+    public static URL buildYoutubeThumbnailUrl(String videoUrl) {
+        Uri builtUri = Uri.parse(YOUTUBE_THUMBNAIL_BASE_URL).buildUpon()
+                .appendEncodedPath(videoUrl)
+                .appendEncodedPath(YOUTUBE_THUMBNAIL_SPECIFIER)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built poster url: " + url);
+        return url;
+    }
+
+    public static URL buildTrailersUrl(String movieId) {
+        Uri builtUri = Uri.parse(MOVIEDB_BASE_URL).buildUpon()
+                .appendEncodedPath(movieId)
+                .appendEncodedPath(PATH_TRAILERS)
+                .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built trailer url: " + url);
+        return url;
+    }
+
+    public static URL buildReviewsUrl(String movieId) {
+        Uri builtUri = Uri.parse(MOVIEDB_BASE_URL).buildUpon()
+                .appendEncodedPath(movieId)
+                .appendEncodedPath(PATH_REVIEWS)
+                .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built review url: " + url);
         return url;
     }
 

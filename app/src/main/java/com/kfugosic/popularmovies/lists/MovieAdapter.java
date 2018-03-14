@@ -1,19 +1,21 @@
-package com.kfugosic.popularmovies;
+package com.kfugosic.popularmovies.lists;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.kfugosic.popularmovies.R;
 import com.kfugosic.popularmovies.models.Movie;
 import com.kfugosic.popularmovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
+public class MovieAdapter extends Adapter<MovieAdapter.MovieViewHolder> {
 
     private List<Movie> mMovies;
 

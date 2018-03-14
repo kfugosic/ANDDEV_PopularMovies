@@ -4,6 +4,7 @@ import android.database.Cursor;
 
 import com.kfugosic.popularmovies.data.FavouriteMoviesContract;
 import com.kfugosic.popularmovies.models.Movie;
+import com.kfugosic.popularmovies.models.Trailer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,25 +17,57 @@ import java.util.List;
  * Created by Kristijan on 06-Mar-18.
  */
 
-public class JsonUtils {
+public class MovieParsingUtils {
 
     private static final String JSON_ALL_RESULTS = "results";
-    private static final String JSON_MOVIE_ID = "id";
+    private static final String JSON_ID = "id";
     private static final String JSON_MOVIE_TITLE = "original_title";
     private static final String JSON_MOVIE_OVERVIEW = "overview";
     private static final String JSON_POSTER_PATH = "poster_path";
     private static final String JSON_USER_RATING = "vote_average";
     private static final String JSON_RELEASE_DATE = "release_date";
 
-    public static List<Movie> parseMovieJson(String json) {
+    private static final String JSON_TRAILER_KEY = "key";
+    private static final String JSON_TRAILER_NAME = "name";
+    private static final String JSON_TRAILER_SITE = "site";
+
+    public static List<Trailer> parseTrailersJson(String json) {
+        List<Trailer> trailers = new ArrayList<>();
+        if(json == null) {
+            return trailers;
+        }
+        try {
+            JSONObject trailersJson = new JSONObject(json);
+            JSONArray allTrailers = trailersJson.optJSONArray(JSON_ALL_RESULTS);
+            for (int i = 0; i < allTrailers.length(); i++) {
+                JSONObject currentTrailer = allTrailers.getJSONObject(i);
+                Trailer newTrailer = new Trailer(
+                        currentTrailer.optString(JSON_ID),
+                        currentTrailer.optString(JSON_TRAILER_KEY),
+                        currentTrailer.optString(JSON_TRAILER_NAME),
+                        currentTrailer.optString(JSON_TRAILER_SITE)
+                );
+                trailers.add(newTrailer);
+            }
+        } catch (JSONException e) {
+            //movies = null;
+            e.printStackTrace();
+        }
+        return trailers;
+    }
+
+    public static List<Movie> parseMoviesJson(String json) {
         List<Movie> movies = new ArrayList<>();
+        if(json == null) {
+            return movies;
+        }
         try {
             JSONObject moviesJson = new JSONObject(json);
-            JSONArray allMovies = moviesJson.getJSONArray(JSON_ALL_RESULTS);
+            JSONArray allMovies = moviesJson.optJSONArray(JSON_ALL_RESULTS);
             for (int i = 0; i < allMovies.length(); i++) {
                 JSONObject currentMovie = allMovies.getJSONObject(i);
                 Movie newMovie = new Movie(
-                        currentMovie.optString(JSON_MOVIE_ID),
+                        currentMovie.optString(JSON_ID),
                         currentMovie.optString(JSON_MOVIE_TITLE),
                         currentMovie.optString(JSON_MOVIE_OVERVIEW),
                         currentMovie.optString(JSON_POSTER_PATH),
@@ -44,7 +77,7 @@ public class JsonUtils {
                 movies.add(newMovie);
             }
         } catch (JSONException e) {
-            movies = null;
+            //movies = null;
             e.printStackTrace();
         }
         return movies;

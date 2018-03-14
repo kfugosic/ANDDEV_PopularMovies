@@ -1,7 +1,6 @@
-package com.kfugosic.popularmovies;
+package com.kfugosic.popularmovies.lists;
 
-import com.kfugosic.popularmovies.models.Movie;
 
 public interface ListItemClickListener {
-    void onListItemClick(Movie clickedMovie);
+    void onListItemClick(Object clickedItem);
 }
