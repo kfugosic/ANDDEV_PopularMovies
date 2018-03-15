@@ -3,17 +3,14 @@ package com.kfugosic.popularmovies.data;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-/**
- * Created by Kristijan on 07-Mar-18.
- */
-
 public class FavouriteMoviesContract {
 
     public static final String AUTHORITY = "com.kfugosic.popularmovies";
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://"+AUTHORITY);
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     public static final String PATH_FAVOURITES = "favourites";
 
-    private FavouriteMoviesContract() {}
+    private FavouriteMoviesContract() {
+    }
 
     public static final class FavouriteMoviesEntry implements BaseColumns {
 

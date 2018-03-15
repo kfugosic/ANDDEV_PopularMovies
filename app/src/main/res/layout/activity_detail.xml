@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -54,7 +53,9 @@
                         android:id="@+id/user_score_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/rating_margin_left"
                         android:layout_marginLeft="@dimen/rating_margin_left"
+                        android:paddingStart="@dimen/rating_padding_left"
                         android:paddingLeft="@dimen/rating_padding_left"
                         android:textSize="@dimen/rating_text_size" />
 
@@ -64,7 +65,6 @@
                         android:id="@+id/favourite_tb"
                         android:layout_margin="@dimen/year_margin"
                         android:layout_gravity="center_horizontal"
-                        android:buttonTint="@color/colorPrimary"
                         android:textOn=""
                         android:textOff=""/>
 
@@ -84,10 +84,11 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/line_height"
                 android:background="@android:color/darker_gray"/>
 
             <TextView
+                android:id="@+id/trailers_headline_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/trailers"
@@ -110,6 +111,7 @@
                 android:background="@android:color/darker_gray"/>
 
             <TextView
+                android:id="@+id/reviews_headline_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/reviews"
@@ -120,7 +122,8 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/reviews_rv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
             </android.support.v7.widget.RecyclerView>
 
         </LinearLayout>

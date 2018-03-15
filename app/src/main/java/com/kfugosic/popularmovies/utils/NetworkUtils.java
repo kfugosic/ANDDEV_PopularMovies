@@ -35,7 +35,7 @@ public class NetworkUtils {
 
     public static URL buildUrl(SortType type) {
         String baseUrl = MOVIEDB_BASE_URL;
-        switch (type){
+        switch (type) {
             case POPULAR:
                 baseUrl += QUERY_TYPE_POPULAR;
                 break;

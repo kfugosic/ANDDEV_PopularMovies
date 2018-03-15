@@ -11,4 +11,6 @@
     <string name="trailers">Trailers:</string>
     <string name="reviews">Reviews:</string>
     <string name="movie_trailer_text">Movie trailer</string>
+    <string name="reviews_not_available">Reviews not available!</string>
+    <string name="trailers_not_available">Trailers not available!</string>
 </resources>

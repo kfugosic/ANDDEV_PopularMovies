@@ -4,6 +4,7 @@ import android.database.Cursor;
 
 import com.kfugosic.popularmovies.data.FavouriteMoviesContract;
 import com.kfugosic.popularmovies.models.Movie;
+import com.kfugosic.popularmovies.models.Review;
 import com.kfugosic.popularmovies.models.Trailer;
 
 import org.json.JSONArray;
@@ -12,10 +13,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by Kristijan on 06-Mar-18.
- */
 
 public class MovieParsingUtils {
 
@@ -31,9 +28,14 @@ public class MovieParsingUtils {
     private static final String JSON_TRAILER_NAME = "name";
     private static final String JSON_TRAILER_SITE = "site";
 
+    private static final String JSON_REVIEW_AUTHOR = "author";
+    private static final String JSON_REVIEW_CONTENT = "content";
+    private static final String JSON_REVIEW_URL = "url";
+
+
     public static List<Trailer> parseTrailersJson(String json) {
         List<Trailer> trailers = new ArrayList<>();
-        if(json == null) {
+        if (json == null) {
             return trailers;
         }
         try {
@@ -50,15 +52,39 @@ public class MovieParsingUtils {
                 trailers.add(newTrailer);
             }
         } catch (JSONException e) {
-            //movies = null;
             e.printStackTrace();
         }
         return trailers;
     }
 
+    public static List<Review> parseReviewsJson(String json) {
+        List<Review> reviews = new ArrayList<>();
+        if (json == null) {
+            return reviews;
+        }
+        try {
+            JSONObject trailersJson = new JSONObject(json);
+            JSONArray allTrailers = trailersJson.optJSONArray(JSON_ALL_RESULTS);
+            for (int i = 0; i < allTrailers.length(); i++) {
+                JSONObject currentTrailer = allTrailers.getJSONObject(i);
+                Review newReview = new Review(
+                        currentTrailer.optString(JSON_ID),
+                        currentTrailer.optString(JSON_REVIEW_AUTHOR),
+                        currentTrailer.optString(JSON_REVIEW_CONTENT),
+                        currentTrailer.optString(JSON_REVIEW_URL)
+                );
+                reviews.add(newReview);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return reviews;
+    }
+
+
     public static List<Movie> parseMoviesJson(String json) {
         List<Movie> movies = new ArrayList<>();
-        if(json == null) {
+        if (json == null) {
             return movies;
         }
         try {
@@ -86,7 +112,7 @@ public class MovieParsingUtils {
     public static List<Movie> parseMovieCursor(Cursor cursor) {
         List<Movie> movies = new ArrayList<>();
         try {
-            for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 // The Cursor is now set to the right position
                 Movie currentMovieInCursor = new Movie(
                         cursor.getString(cursor.getColumnIndex(FavouriteMoviesContract.FavouriteMoviesEntry.COLUMN_TMDBID)),

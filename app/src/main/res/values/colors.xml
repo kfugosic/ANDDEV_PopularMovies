@@ -7,6 +7,8 @@
     <color name="colorTextPrimary">#ffffff</color>
     <color name="colorTextSecondary">#191b28</color>
 
-    <color name="background_material_light">#fafafa</color>
-    <color name="background_material_dark">#FF212121</color>
+    <color name="background_light">#fafafa</color>
+    <color name="background_dark">#FF212121</color>
+    <color name="background_darkgray">#202020</color>
+
 </resources>

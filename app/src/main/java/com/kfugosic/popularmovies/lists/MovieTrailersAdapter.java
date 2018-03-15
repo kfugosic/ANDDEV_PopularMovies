@@ -32,7 +32,6 @@ public class MovieTrailersAdapter extends RecyclerView.Adapter<MovieTrailersAdap
         int layoutId = R.layout.movie_trailer;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmidiately = false;
-
         View view = inflater.inflate(layoutId, parent, shouldAttachToParentImmidiately);
         return new MovieTrailersViewHolder(view);
     }

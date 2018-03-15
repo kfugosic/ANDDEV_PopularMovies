@@ -4,8 +4,8 @@
     <dimen name="header_padding">10sp</dimen>
     <dimen name="poster_height">277dp</dimen>
     <dimen name="poster_width">185dp</dimen>
-    <dimen name="poster_margin">10sp</dimen>
-    <dimen name="year_margin">10sp</dimen>
+    <dimen name="poster_margin">10dp</dimen>
+    <dimen name="year_margin">10dp</dimen>
     <dimen name="year_padding">10dp</dimen>
     <dimen name="year_text_size">30sp</dimen>
     <dimen name="rating_margin_left">10sp</dimen>
@@ -14,4 +14,13 @@
     <dimen name="overview_margin">10sp</dimen>
     <dimen name="overview_text_size">16sp</dimen>
     <dimen name="favourite_btn_dim">40dp</dimen>
+    <dimen name="trailer_thumbn_height">180dp</dimen>
+    <dimen name="review_author_height">25dp</dimen>
+    <dimen name="review_margin">10dp</dimen>
+    <dimen name="review_author_textsize">14sp</dimen>
+    <dimen name="line_height">1dp</dimen>
+    <dimen name="review_content_text_padding">7dp</dimen>
+    <dimen name="movie_review_width">200dp</dimen>
+    <dimen name="fading_edge_length">40dp</dimen>
+    <dimen name="review_content_size">175dp</dimen>
 </resources>

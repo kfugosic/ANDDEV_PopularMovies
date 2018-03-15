@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,10 +21,11 @@ import android.widget.ToggleButton;
 
 import com.kfugosic.popularmovies.data.FavouriteMoviesContract;
 import com.kfugosic.popularmovies.lists.ListItemClickListener;
-import com.kfugosic.popularmovies.lists.MovieAdapter;
+import com.kfugosic.popularmovies.lists.MovieReviewsAdapter;
 import com.kfugosic.popularmovies.lists.MovieTrailersAdapter;
 import com.kfugosic.popularmovies.lists.TrailersReviewsTuple;
 import com.kfugosic.popularmovies.models.Movie;
+import com.kfugosic.popularmovies.models.Review;
 import com.kfugosic.popularmovies.models.Trailer;
 import com.kfugosic.popularmovies.utils.MovieParsingUtils;
 import com.kfugosic.popularmovies.utils.NetworkUtils;
@@ -50,12 +50,13 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
     private ToggleButton mFavouriteButton;
     private RecyclerView mTrailersList;
     private RecyclerView mReviewsList;
+    private TextView mTrailersHeadline;
+    private TextView mReviewsHeadline;
 
     private static final String MOVIE_TRAILERS_URL_EXTRA = "movie_trailers_url";
     private static final String MOVIE_REVIEWS_URL_EXTRA = "movie_reviews_url";
 
-    private static final int MOVIE_RETRIEVE_TRAILERS_LOADER_ID = 201;
-    private static final int MOVIE_RETRIEVE_REVIEWS_LOADER_ID = 202;
+    private static final int MOVIE_RETRIEVE_TRAILERS_AND_REVIEWS_LOADER_ID = 201;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +71,8 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
 
         mTrailersList = findViewById(R.id.trailers_rv);
         mReviewsList = findViewById(R.id.reviews_rv);
+        mTrailersHeadline = findViewById(R.id.trailers_headline_tv);
+        mReviewsHeadline = findViewById(R.id.reviews_headline_tv);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -105,7 +108,7 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
                 .error(R.drawable.ic_do_not_disturb_alt_black_24dp)
                 .into(mPosterDisplay);
 
-        mFavouriteButton = (ToggleButton) findViewById(R.id.favourite_tb);
+        mFavouriteButton = findViewById(R.id.favourite_tb);
         setInitialyChecked();
         mFavouriteButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -126,19 +129,20 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
     }
 
 
-
     private void populateListAdapters() {
-        URL queryUrl = NetworkUtils.buildTrailersUrl(selectedMovie.getId());
+        URL queryUrlTrailers = NetworkUtils.buildTrailersUrl(selectedMovie.getId());
+        URL queryUrlReviews = NetworkUtils.buildReviewsUrl(selectedMovie.getId());
         Bundle queryBundle = new Bundle();
-        queryBundle.putString(MOVIE_TRAILERS_URL_EXTRA, queryUrl.toString());
+        queryBundle.putString(MOVIE_TRAILERS_URL_EXTRA, queryUrlTrailers.toString());
+        queryBundle.putString(MOVIE_REVIEWS_URL_EXTRA, queryUrlReviews.toString());
 
         LoaderManager loaderManager = getSupportLoaderManager();
-        Loader<String> movieTrailersLoader = loaderManager.getLoader(MOVIE_RETRIEVE_TRAILERS_LOADER_ID);
+        Loader<String> movieTrailersLoader = loaderManager.getLoader(MOVIE_RETRIEVE_TRAILERS_AND_REVIEWS_LOADER_ID);
 
         if (movieTrailersLoader == null) {
-            loaderManager.initLoader(MOVIE_RETRIEVE_TRAILERS_LOADER_ID, queryBundle, this);
+            loaderManager.initLoader(MOVIE_RETRIEVE_TRAILERS_AND_REVIEWS_LOADER_ID, queryBundle, this);
         } else {
-            loaderManager.restartLoader(MOVIE_RETRIEVE_TRAILERS_LOADER_ID, queryBundle, this);
+            loaderManager.restartLoader(MOVIE_RETRIEVE_TRAILERS_AND_REVIEWS_LOADER_ID, queryBundle, this);
         }
     }
 
@@ -150,7 +154,10 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
     }
 
     private void initializeReviewsList() {
-        // TODO implement
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mReviewsList.setLayoutManager(layoutManager);
+        mReviewsList.setHasFixedSize(true);
+        mReviewsList.setAdapter(new MovieReviewsAdapter(new ArrayList<Review>(), null));
     }
 
     private void setInitialyChecked() {
@@ -160,14 +167,15 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
                 "tmdbid=?",
                 new String[]{selectedMovie.getId()},
                 null
-                );
-        if(queryResult.getCount() > 0) {
+        );
+        if (queryResult != null && queryResult.getCount() > 0) {
             mFavouriteButton.setChecked(true);
             mFavouriteButton.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_favorite_24dp));
         } else {
             mFavouriteButton.setChecked(false);
             mFavouriteButton.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_favorite_empty_24dp));
         }
+        queryResult.close();
     }
 
     private Uri insertIntoFavourites() {
@@ -187,9 +195,9 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
         int deletedCount = getContentResolver().delete(
                 FavouriteMoviesContract.FavouriteMoviesEntry.CONTENT_URI,
                 "tmdbid=?",
-                new String[]{selectedMovie.getId().toString()}
-                );
-        if(deletedCount > 0){
+                new String[]{selectedMovie.getId()}
+        );
+        if (deletedCount > 0) {
             setResult(MainActivity.RESULT_FAVOURITES_MODIFIED);
         }
         return deletedCount;
@@ -214,26 +222,30 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
             @Override
             public TrailersReviewsTuple loadInBackground() {
 
-                if(args == null || args.isEmpty()) {
+                if (args == null || args.isEmpty()) {
                     return null;
                 }
 
-                String queryUrl = args.getString(MOVIE_TRAILERS_URL_EXTRA);
-                if (queryUrl == null || queryUrl.isEmpty()) {
-                    return null;
-                }
+                String queryUrlTrailers = args.getString(MOVIE_TRAILERS_URL_EXTRA);
+                String queryUrlReviews = args.getString(MOVIE_REVIEWS_URL_EXTRA);
 
-                String queryResult = null;
+                String queryResultTrailers = null;
+                String queryResultReviews = null;
                 try {
-                    queryResult = NetworkUtils.getResponseFromHttpUrl(new URL(queryUrl));
+                    queryResultTrailers = NetworkUtils.getResponseFromHttpUrl(new URL(queryUrlTrailers));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                List<Trailer> trailers = MovieParsingUtils.parseTrailersJson(queryResult);
-                TrailersReviewsTuple resultTuple = new TrailersReviewsTuple();
-                resultTuple.setTrailerList(trailers);
+                try {
+                    queryResultReviews = NetworkUtils.getResponseFromHttpUrl(new URL(queryUrlReviews));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-                return resultTuple;
+                List<Trailer> trailers = MovieParsingUtils.parseTrailersJson(queryResultTrailers);
+                List<Review> reviews = MovieParsingUtils.parseReviewsJson(queryResultReviews);
+
+                return new TrailersReviewsTuple(trailers, reviews);
             }
 
         };
@@ -241,34 +253,51 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
 
     @Override
     public void onLoadFinished(Loader<TrailersReviewsTuple> loader, TrailersReviewsTuple data) {
-        if (data != null) {
-            MovieTrailersAdapter adapter = new MovieTrailersAdapter(data.getTrailerList(), this);
-            mTrailersList.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-        } else {
-            Toast.makeText(this, R.string.error_text, Toast.LENGTH_SHORT).show();
+        if (data == null) {
+            mReviewsHeadline.setText(R.string.reviews_not_available);
+            mReviewsHeadline.setText(R.string.trailers_not_available);
+            return;
         }
+        if (data.getTrailerList() != null && !data.getTrailerList().isEmpty()) {
+            mTrailersHeadline.setText(R.string.trailers);
+            MovieTrailersAdapter adapterTrailers = new MovieTrailersAdapter(data.getTrailerList(), this);
+            mTrailersList.setAdapter(adapterTrailers);
+            adapterTrailers.notifyDataSetChanged();
+        } else {
+            mTrailersHeadline.setText(R.string.trailers_not_available);
+        }
+        if (data.getReviewList() != null && !data.getReviewList().isEmpty()) {
+            mReviewsHeadline.setText(R.string.reviews);
+            MovieReviewsAdapter adapterReviews = new MovieReviewsAdapter(data.getReviewList(), this);
+            mReviewsList.setAdapter(adapterReviews);
+            adapterReviews.notifyDataSetChanged();
+        } else {
+            mReviewsHeadline.setText(R.string.reviews_not_available);
+        }
+
     }
 
     @Override
     public void onLoaderReset(Loader<TrailersReviewsTuple> loader) {
-
     }
 
     @Override
     public void onListItemClick(Object clickedItem) {
-        if(!(clickedItem instanceof Trailer)) {
-            return;
-        }
-        Trailer chosenTrailer = (Trailer) clickedItem;
-        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + chosenTrailer.getKey()));
-        Intent webIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("http://www.youtube.com/watch?v=" + chosenTrailer.getKey()));
-        try {
-            startActivity(appIntent);
-        } catch (ActivityNotFoundException ex) {
+        if (clickedItem instanceof Trailer) {
+            Trailer chosenTrailer = (Trailer) clickedItem;
+            Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + chosenTrailer.getKey()));
+            Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://www.youtube.com/watch?v=" + chosenTrailer.getKey()));
+            try {
+                startActivity(appIntent);
+            } catch (ActivityNotFoundException ex) {
+                startActivity(webIntent);
+            }
+            Toast.makeText(this, ((Trailer) clickedItem).getName(), Toast.LENGTH_SHORT).show();
+        } else if (clickedItem instanceof Review) {
+            Review chosenReview = (Review) clickedItem;
+            Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(chosenReview.getUrl()));
             startActivity(webIntent);
         }
-        Toast.makeText(this, ((Trailer) clickedItem).getName(), Toast.LENGTH_SHORT).show();
     }
 }

@@ -12,10 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-/**
- * Created by Kristijan on 07-Mar-18.
- */
-
 public class FavouriteMoviesContentProvider extends ContentProvider {
 
     private static final int FAVOURITE_MOVIES = 100;
@@ -47,7 +43,7 @@ public class FavouriteMoviesContentProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder
-                        );
+                );
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -66,7 +62,7 @@ public class FavouriteMoviesContentProvider extends ContentProvider {
         switch (match) {
             case FAVOURITE_MOVIES:
                 long id = db.insert(FavouriteMoviesContract.FavouriteMoviesEntry.TABLE_NAME, null, contentValues);
-                if(id > 0){
+                if (id > 0) {
                     resultUri = ContentUris.withAppendedId(FavouriteMoviesContract.FavouriteMoviesEntry.CONTENT_URI, id);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
@@ -81,7 +77,6 @@ public class FavouriteMoviesContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        Log.d("AA12", selection + " - "+selectionArgs);
         final SQLiteDatabase db = mFavouriteMoviesDbHelper.getWritableDatabase();
         int match = sUriMatcher.match(uri);
         int tasksDeleted = 0;
@@ -95,7 +90,7 @@ public class FavouriteMoviesContentProvider extends ContentProvider {
                 );
                 break;
             case FAVOURITE_MOVIES:
-                if(selection != null && selectionArgs != null) {
+                if (selection != null && selectionArgs != null) {
                     tasksDeleted = db.delete(
                             FavouriteMoviesContract.FavouriteMoviesEntry.TABLE_NAME,
                             selection,
@@ -106,7 +101,7 @@ public class FavouriteMoviesContentProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-        if(tasksDeleted > 0) {
+        if (tasksDeleted > 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return tasksDeleted;
@@ -125,7 +120,7 @@ public class FavouriteMoviesContentProvider extends ContentProvider {
                         contentValues,
                         "_id=?",
                         new String[]{id}
-                        );
+                );
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -133,7 +128,6 @@ public class FavouriteMoviesContentProvider extends ContentProvider {
         if (tasksUpdated > 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
-        // return number of tasks updated
         return tasksUpdated;
     }
 
@@ -143,17 +137,15 @@ public class FavouriteMoviesContentProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         switch (match) {
             case FAVOURITE_MOVIES:
-                // directory
                 return "vnd.android.cursor.dir" + "/" + FavouriteMoviesContract.AUTHORITY + "/" + FavouriteMoviesContract.PATH_FAVOURITES;
             case SPECIFIC_MOVIE:
-                // single item type
                 return "vnd.android.cursor.item" + "/" + FavouriteMoviesContract.AUTHORITY + "/" + FavouriteMoviesContract.PATH_FAVOURITES;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
     }
 
-    public static UriMatcher buildUriMatcher() {
+    private static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(FavouriteMoviesContract.AUTHORITY, FavouriteMoviesContract.PATH_FAVOURITES, FAVOURITE_MOVIES);
         uriMatcher.addURI(FavouriteMoviesContract.AUTHORITY, FavouriteMoviesContract.PATH_FAVOURITES + "/#", SPECIFIC_MOVIE);

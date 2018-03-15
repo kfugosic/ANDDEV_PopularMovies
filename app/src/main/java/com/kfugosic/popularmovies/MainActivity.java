@@ -38,10 +38,11 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
     public static final int MOVIE_DETAILS_REQUEST = 1;
     public static final int RESULT_FAVOURITES_MODIFIED = 11;
 
-
     private static final String MOVIEDB_QUERY_URL_EXTRA = "query_url";
     private static final String SORT_TYPE = "sort_type";
     private static final SortType DEFAULT_SORT_TYPE = SortType.POPULAR;
+
+    private static final int POSTER_WIDTH = 185;
 
     private SortType currentSortType;
 
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
 
     @Override
     public void onListItemClick(Object clickedItem) {
-        if(!(clickedItem instanceof Movie)) {
+        if (!(clickedItem instanceof Movie)) {
             return;
         }
         Intent intent = new Intent(this, DetailActivity.class);
@@ -85,8 +86,8 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == MOVIE_DETAILS_REQUEST) {
-            if(resultCode == RESULT_FAVOURITES_MODIFIED) {
+        if (requestCode == MOVIE_DETAILS_REQUEST) {
+            if (resultCode == RESULT_FAVOURITES_MODIFIED) {
                 favouritesModified = true;
             }
         }
@@ -131,16 +132,16 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
 
     private void fillAdapter() {
         int loaderId = -1;
-        if(currentSortType == SortType.POPULAR) {
+        if (currentSortType == SortType.POPULAR) {
             loaderId = MOVIEDB_QUERY_LOADER_POPULAR;
-        } else if(currentSortType == SortType.HIGHEST_RATED) {
+        } else if (currentSortType == SortType.HIGHEST_RATED) {
             loaderId = MOVIEDB_QUERY_LOADER_HIGHESTRATED;
-        } else if(currentSortType == SortType.FAVOURITES) {
+        } else if (currentSortType == SortType.FAVOURITES) {
             loaderId = MOVIEDB_QUERY_LOADER_FAVOURITES;
         }
 
         Bundle queryBundle = null;
-        if(currentSortType != SortType.FAVOURITES) {
+        if (currentSortType != SortType.FAVOURITES) {
             URL queryUrl = NetworkUtils.buildUrl(currentSortType);
             queryBundle = new Bundle();
             queryBundle.putString(MOVIEDB_QUERY_URL_EXTRA, queryUrl.toString());
@@ -169,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
                     forceLoad();
                     return;
                 }
-                if(favouritesModified && currentSortType == SortType.FAVOURITES) {
+                if (favouritesModified && currentSortType == SortType.FAVOURITES) {
                     favouritesModified = false;
                     forceLoad();
                     return;
@@ -180,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
             @Override
             public List<Movie> loadInBackground() {
 
-                if(currentSortType == SortType.FAVOURITES){
+                if (currentSortType == SortType.FAVOURITES) {
                     Cursor cursor = getContentResolver().query(FavouriteMoviesContract.FavouriteMoviesEntry.CONTENT_URI,
                             null,
                             null,
@@ -234,9 +235,9 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         // You can change this divider to adjust the size of the poster
-        float widthDivider = pxFromDp(185);
+        float widthDivider = pxFromDp(POSTER_WIDTH);
         int width = displayMetrics.widthPixels;
-        int nColumns = (int)(width / widthDivider);
+        int nColumns = (int) (width / widthDivider);
         if (nColumns < 2) return 2;
         return nColumns;
     }
