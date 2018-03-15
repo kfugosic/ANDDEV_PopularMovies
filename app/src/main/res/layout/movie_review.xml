@@ -34,7 +34,6 @@
         android:padding="@dimen/review_content_text_padding"
         android:background="@color/background_darkgray"
         android:requiresFadingEdge="vertical"
-        android:fadingEdgeLength="@dimen/fading_edge_length"
-        />
+        android:fadingEdgeLength="@dimen/fading_edge_length"/>
 
 </LinearLayout>
