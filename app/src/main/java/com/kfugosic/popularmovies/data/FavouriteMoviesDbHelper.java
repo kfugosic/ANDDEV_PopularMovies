@@ -31,6 +31,7 @@ public class FavouriteMoviesDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+        // This just recreates the table, it should be changed to ALTER if app ever goes into production
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FavouriteMoviesEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }

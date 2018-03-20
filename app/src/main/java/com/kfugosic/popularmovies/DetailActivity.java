@@ -288,9 +288,10 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
             Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + chosenTrailer.getKey()));
             Intent webIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse("http://www.youtube.com/watch?v=" + chosenTrailer.getKey()));
-            try {
+
+            if(appIntent.resolveActivity(getPackageManager()) != null) {
                 startActivity(appIntent);
-            } catch (ActivityNotFoundException ex) {
+            } else if(webIntent.resolveActivity(getPackageManager()) != null) {
                 startActivity(webIntent);
             }
             Toast.makeText(this, ((Trailer) clickedItem).getName(), Toast.LENGTH_SHORT).show();

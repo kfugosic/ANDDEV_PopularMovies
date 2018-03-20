@@ -33,13 +33,13 @@ public class NetworkUtils {
     // TODO Put your API key here
     private static final String API_KEY = "";
 
-    public static URL buildUrl(SortType type) {
+    public static URL buildUrl(int type) {
         String baseUrl = MOVIEDB_BASE_URL;
         switch (type) {
-            case POPULAR:
+            case SortType.POPULAR:
                 baseUrl += QUERY_TYPE_POPULAR;
                 break;
-            case HIGHEST_RATED:
+            case SortType.HIGHEST_RATED:
                 baseUrl += QUERY_TYPE_TOPRATED;
                 break;
         }

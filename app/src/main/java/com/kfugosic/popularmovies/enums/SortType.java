@@ -1,7 +1,7 @@
 package com.kfugosic.popularmovies.enums;
 
-public enum SortType {
-    POPULAR,
-    HIGHEST_RATED,
-    FAVOURITES
+public class SortType {
+    public static final int POPULAR = 401;
+    public static final int HIGHEST_RATED = 402;
+    public static final int FAVOURITES = 403;
 }

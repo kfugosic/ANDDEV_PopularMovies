@@ -3,7 +3,6 @@ package com.kfugosic.popularmovies;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.os.PersistableBundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -40,11 +39,11 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
 
     private static final String MOVIEDB_QUERY_URL_EXTRA = "query_url";
     private static final String SORT_TYPE = "sort_type";
-    private static final SortType DEFAULT_SORT_TYPE = SortType.POPULAR;
+    private static final int DEFAULT_SORT_TYPE = SortType.POPULAR;
 
     private static final int POSTER_WIDTH = 185;
 
-    private SortType currentSortType;
+    private int currentSortType;
 
     private boolean favouritesModified;
 
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
         if (savedInstanceState == null || !savedInstanceState.containsKey(SORT_TYPE)) {
             currentSortType = DEFAULT_SORT_TYPE;
         } else {
-            currentSortType = (SortType) savedInstanceState.get(SORT_TYPE);
+            currentSortType = (int) savedInstanceState.get(SORT_TYPE);
         }
 
         fillAdapter();
@@ -121,9 +120,9 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+    public void onSaveInstanceState(Bundle outState) {
         outState.putSerializable(SORT_TYPE, currentSortType);
-        super.onSaveInstanceState(outState, outPersistentState);
+        super.onSaveInstanceState(outState);
     }
 
     //
