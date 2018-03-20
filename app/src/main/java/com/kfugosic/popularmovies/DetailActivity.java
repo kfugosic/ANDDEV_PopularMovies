@@ -291,10 +291,13 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
 
             if(appIntent.resolveActivity(getPackageManager()) != null) {
                 startActivity(appIntent);
+                Toast.makeText(this, ((Trailer) clickedItem).getName(), Toast.LENGTH_SHORT).show();
             } else if(webIntent.resolveActivity(getPackageManager()) != null) {
                 startActivity(webIntent);
+                Toast.makeText(this, ((Trailer) clickedItem).getName(), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Please install browser or youtube app to preview this trailer!", Toast.LENGTH_LONG).show();
             }
-            Toast.makeText(this, ((Trailer) clickedItem).getName(), Toast.LENGTH_SHORT).show();
         } else if (clickedItem instanceof Review) {
             Review chosenReview = (Review) clickedItem;
             Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(chosenReview.getUrl()));
