@@ -33,8 +33,8 @@ public class MovieParsingUtils {
     private static final String JSON_REVIEW_URL = "url";
 
 
-    public static List<Trailer> parseTrailersJson(String json) {
-        List<Trailer> trailers = new ArrayList<>();
+    public static ArrayList<Trailer> parseTrailersJson(String json) {
+        ArrayList<Trailer> trailers = new ArrayList<>();
         if (json == null) {
             return trailers;
         }
@@ -57,8 +57,8 @@ public class MovieParsingUtils {
         return trailers;
     }
 
-    public static List<Review> parseReviewsJson(String json) {
-        List<Review> reviews = new ArrayList<>();
+    public static ArrayList<Review> parseReviewsJson(String json) {
+        ArrayList<Review> reviews = new ArrayList<>();
         if (json == null) {
             return reviews;
         }

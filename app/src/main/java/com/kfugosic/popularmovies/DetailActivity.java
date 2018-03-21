@@ -5,6 +5,8 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.ContextCompat;
@@ -13,8 +15,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -42,6 +46,7 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
 
     private Movie selectedMovie;
 
+    private ScrollView mDetailsScrollView;
     private TextView mTitleDisplay;
     private TextView mYearDisplay;
     private TextView mUserScoreDisplay;
@@ -58,11 +63,20 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
 
     private static final int MOVIE_RETRIEVE_TRAILERS_AND_REVIEWS_LOADER_ID = 201;
 
+    private static final String KEY_INSTANCE_STATE_TRAILERS_RV_POSITION = "trailers_rv_position";
+    private static final String KEY_INSTANCE_STATE_REVIEWS_RV_POSITION = "reviews_rv_position";
+    private static final String LOADED_TRAILERS_AND_REVIEWS_CACHE = "trailers_reviews_data";
+
+    private Parcelable mTrailersLayoutManagerState;
+    private Parcelable mReviewsLayoutManagerState;
+    private TrailersReviewsTuple mLoadedTrailersAndReviews;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        mDetailsScrollView = findViewById(R.id.detail_screen_sv);
         mTitleDisplay = findViewById(R.id.title_tv);
         mYearDisplay = findViewById(R.id.year_tv);
         mUserScoreDisplay = findViewById(R.id.user_score_tv);
@@ -84,6 +98,13 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
         if (selectedMovie == null) {
             closeOnError();
             return;
+        }
+
+        if(savedInstanceState != null) {
+            mTrailersLayoutManagerState = savedInstanceState.getParcelable(KEY_INSTANCE_STATE_TRAILERS_RV_POSITION);
+            mReviewsLayoutManagerState = savedInstanceState.getParcelable(KEY_INSTANCE_STATE_REVIEWS_RV_POSITION);
+            mLoadedTrailersAndReviews = savedInstanceState.getParcelable(LOADED_TRAILERS_AND_REVIEWS_CACHE);
+            Log.d("AA12", String.valueOf(mLoadedTrailersAndReviews==null));
         }
 
         try {
@@ -130,6 +151,10 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
 
 
     private void populateListAdapters() {
+        if(mLoadedTrailersAndReviews != null) {
+            loadAdapters(mLoadedTrailersAndReviews);
+            return;
+        }
         URL queryUrlTrailers = NetworkUtils.buildTrailersUrl(selectedMovie.getId());
         URL queryUrlReviews = NetworkUtils.buildReviewsUrl(selectedMovie.getId());
         Bundle queryBundle = new Bundle();
@@ -258,11 +283,19 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
             mReviewsHeadline.setText(R.string.trailers_not_available);
             return;
         }
+        mLoadedTrailersAndReviews = data;
+        loadAdapters(data);
+    }
+
+    private void loadAdapters(TrailersReviewsTuple data) {
         if (data.getTrailerList() != null && !data.getTrailerList().isEmpty()) {
             mTrailersHeadline.setText(R.string.trailers);
             MovieTrailersAdapter adapterTrailers = new MovieTrailersAdapter(data.getTrailerList(), this);
             mTrailersList.setAdapter(adapterTrailers);
             adapterTrailers.notifyDataSetChanged();
+            if(mTrailersLayoutManagerState != null) {
+                mTrailersList.getLayoutManager().onRestoreInstanceState(mTrailersLayoutManagerState);
+            }
         } else {
             mTrailersHeadline.setText(R.string.trailers_not_available);
         }
@@ -271,10 +304,12 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
             MovieReviewsAdapter adapterReviews = new MovieReviewsAdapter(data.getReviewList(), this);
             mReviewsList.setAdapter(adapterReviews);
             adapterReviews.notifyDataSetChanged();
+            if(mReviewsLayoutManagerState != null) {
+                mReviewsList.getLayoutManager().onRestoreInstanceState(mReviewsLayoutManagerState);
+            }
         } else {
             mReviewsHeadline.setText(R.string.reviews_not_available);
         }
-
     }
 
     @Override
@@ -303,5 +338,20 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
             Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(chosenReview.getUrl()));
             startActivity(webIntent);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mTrailersLayoutManagerState = mTrailersList.getLayoutManager().onSaveInstanceState();
+        mReviewsLayoutManagerState = mReviewsList.getLayoutManager().onSaveInstanceState();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(KEY_INSTANCE_STATE_TRAILERS_RV_POSITION, mTrailersLayoutManagerState);
+        outState.putParcelable(KEY_INSTANCE_STATE_REVIEWS_RV_POSITION, mReviewsLayoutManagerState);
+        outState.putParcelable(LOADED_TRAILERS_AND_REVIEWS_CACHE, mLoadedTrailersAndReviews);
+        super.onSaveInstanceState(outState);
     }
 }

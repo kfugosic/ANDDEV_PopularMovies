@@ -88,7 +88,7 @@ public class NetworkUtils {
             e.printStackTrace();
         }
 
-        Log.v(TAG, "Built poster url: " + url);
+        Log.v(TAG, "Built youtube url: " + url);
         return url;
     }
 

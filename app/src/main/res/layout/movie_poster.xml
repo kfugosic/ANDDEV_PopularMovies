@@ -5,6 +5,7 @@
 
     <ImageView
         android:id="@+id/poster_iv"
+        android:transitionName="@string/poster_transition"
         android:layout_width="@dimen/poster_width"
         android:layout_height="@dimen/poster_height"
         android:contentDescription="@string/poster_iv_content_desc"

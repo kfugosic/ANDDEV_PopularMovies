@@ -1,34 +1,44 @@
 package com.kfugosic.popularmovies;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.kfugosic.popularmovies.data.FavouriteMoviesContract;
-import com.kfugosic.popularmovies.lists.ListItemClickListener;
+import com.kfugosic.popularmovies.enums.SortType;
+import com.kfugosic.popularmovies.lists.MainMovieListItemClickListener;
 import com.kfugosic.popularmovies.lists.MovieAdapter;
 import com.kfugosic.popularmovies.models.Movie;
 import com.kfugosic.popularmovies.utils.MovieParsingUtils;
 import com.kfugosic.popularmovies.utils.NetworkUtils;
-import com.kfugosic.popularmovies.enums.SortType;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements ListItemClickListener, LoaderManager.LoaderCallbacks<List<Movie>> {
+public class MainActivity extends AppCompatActivity implements MainMovieListItemClickListener, LoaderManager.LoaderCallbacks<List<Movie>> {
+
+    private static final String KEY_INSTANCE_STATE_RV_POSITION = "rv_position";
 
     public static final int MOVIEDB_QUERY_LOADER_HIGHESTRATED = 1;
     public static final int MOVIEDB_QUERY_LOADER_POPULAR = 2;
@@ -48,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
     private boolean favouritesModified;
 
     private RecyclerView moviesGrid;
+    private Parcelable mLayoutManagerState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,30 +68,36 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
 
         moviesGrid = findViewById(R.id.movies_rv);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, numberOfColumns());
+        GridLayoutManager mLayoutManager = new GridLayoutManager(this, numberOfColumns());
 
-        moviesGrid.setLayoutManager(layoutManager);
+        moviesGrid.setLayoutManager(mLayoutManager);
         moviesGrid.setHasFixedSize(true);
         moviesGrid.setAdapter(new MovieAdapter(new ArrayList<Movie>(), null));
 
-        if (savedInstanceState == null || !savedInstanceState.containsKey(SORT_TYPE)) {
-            currentSortType = DEFAULT_SORT_TYPE;
-        } else {
-            currentSortType = (int) savedInstanceState.get(SORT_TYPE);
+        currentSortType = (int) getPreferences(Context.MODE_PRIVATE).getInt(SORT_TYPE, DEFAULT_SORT_TYPE);
+
+        if(savedInstanceState != null) {
+            mLayoutManagerState = savedInstanceState.getParcelable(KEY_INSTANCE_STATE_RV_POSITION);
         }
 
         fillAdapter();
 
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
-    public void onListItemClick(Object clickedItem) {
-        if (!(clickedItem instanceof Movie)) {
-            return;
-        }
+    public void onListItemClick(Movie clickedItem, ImageView imageView) {
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(DetailActivity.CLICKED_MOVIE, (Movie) clickedItem);
-        startActivityForResult(intent, MOVIE_DETAILS_REQUEST);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, (View) imageView, getString(R.string.poster_transition));
+
+
+        if (Build.VERSION.SDK_INT >= 16) {
+            startActivityForResult(intent, MOVIE_DETAILS_REQUEST, options.toBundle());
+        } else {
+            startActivityForResult(intent, MOVIE_DETAILS_REQUEST);
+        }
     }
 
     @Override
@@ -101,27 +118,50 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int menuItemSelected = item.getItemId();
+        boolean modified = false;
+
         switch (menuItemSelected) {
             case R.id.action_sort_popular:
+                if(currentSortType != SortType.POPULAR){
+                    modified = true;
+                }
                 currentSortType = SortType.POPULAR;
-                fillAdapter();
                 break;
             case R.id.action_sort_highest_rated:
+                if(currentSortType != SortType.HIGHEST_RATED){
+                    modified = true;
+                }
                 currentSortType = SortType.HIGHEST_RATED;
-                fillAdapter();
                 break;
             case R.id.action_sort_favourites:
+                if(currentSortType != SortType.FAVOURITES){
+                    modified = true;
+                }
                 currentSortType = SortType.FAVOURITES;
-                fillAdapter();
                 break;
+        }
+        if(modified) {
+            mLayoutManagerState = null;
+            fillAdapter();
+
+            SharedPreferences sharedPref =getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt(SORT_TYPE, currentSortType);
+            editor.commit();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        mLayoutManagerState = moviesGrid.getLayoutManager().onSaveInstanceState();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(SORT_TYPE, currentSortType);
+        outState.putParcelable(KEY_INSTANCE_STATE_RV_POSITION, mLayoutManagerState);
         super.onSaveInstanceState(outState);
     }
 
@@ -217,6 +257,9 @@ public class MainActivity extends AppCompatActivity implements ListItemClickList
             MovieAdapter adapter = new MovieAdapter(movies, this);
             moviesGrid.setAdapter(adapter);
             adapter.notifyDataSetChanged();
+            if(mLayoutManagerState != null) {
+                moviesGrid.getLayoutManager().onRestoreInstanceState(mLayoutManagerState);
+            }
         } else {
             Toast.makeText(this, R.string.error_text, Toast.LENGTH_SHORT).show();
         }

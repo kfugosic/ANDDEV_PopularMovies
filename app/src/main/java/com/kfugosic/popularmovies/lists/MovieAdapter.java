@@ -19,9 +19,9 @@ public class MovieAdapter extends Adapter<MovieAdapter.MovieViewHolder> {
 
     private List<Movie> mMovies;
 
-    final private ListItemClickListener mOnClickListener;
+    final private MainMovieListItemClickListener mOnClickListener;
 
-    public MovieAdapter(List<Movie> movies, ListItemClickListener clickListener) {
+    public MovieAdapter(List<Movie> movies, MainMovieListItemClickListener clickListener) {
         mMovies = movies;
         mOnClickListener = clickListener;
     }
@@ -69,7 +69,7 @@ public class MovieAdapter extends Adapter<MovieAdapter.MovieViewHolder> {
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            mOnClickListener.onListItemClick(mMovies.get(position));
+            mOnClickListener.onListItemClick(mMovies.get(position), posterImageView);
         }
     }
 }
